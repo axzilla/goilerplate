@@ -1,60 +1,154 @@
 package components
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // DropdownMenuItem represents an item in the dropdown menu
 type DropdownMenuItem struct {
-	Label  string
-	Value  string
-	Href   string
-	Target string
+	Label     string             // The text to display for the menu item
+	Value     string             // The value associated with the menu item (for non-link items)
+	Href      string             // The URL to navigate to if the item is a link
+	Target    string             // The target attribute for link items (e.g., "_blank" for new tab)
+	IconLeft  templ.Component    // An optional icon component to display on the left side of the item
+	IconRight templ.Component    // An optional icon component to display on the right side of the item
+	SubItems  []DropdownMenuItem // A slice of DropdownMenuItems for nested submenus
+	Disabled  bool               // Whether the item is disabled or not
 }
 
 // DropdownMenuProps defines the properties for the DropdownMenu component
 type DropdownMenuProps struct {
-	Items    []DropdownMenuItem
-	Label    string
-	Class    string
-	Position string // "left" or "right", defaults to right if not specified
+	Items    []DropdownMenuItem // The list of items to display in the dropdown menu
+	Trigger  templ.Component    // An optional custom trigger component (default is a button if not provided)
+	Class    string             // Additional CSS classes to apply to the root element
+	Position string             // The preferred position of the dropdown ("left", "right", "top", or "bottom")
 }
 
-// DropdownMenu renders a dropdown menu component.
-//
-// It provides a button that, when clicked, displays a list of options.
-// The menu can be positioned to the left or right of the button.
-// It supports both button and link items, with optional target attribute for links.
-//
-// Props:
-//   - Items: Slice of DropdownMenuItem, defining the content of the dropdown
-//   - Label: Text to display on the dropdown button
-//   - Class: Additional CSS classes to apply to the root element
-//   - Position: "left" or "right", determines the horizontal position of the dropdown
-//
-// DropdownMenuItem fields:
-//   - Label: Text to display for the item
-//   - Value: Value associated with the item (for button items)
-//   - Href: URL for link items
-//   - Target: Target attribute for link items (e.g., "_blank" for new tab)
+// renderMenuItem is a helper function to render a single menu item
+// It handles rendering of regular items, links, and submenus recursively
+templ renderMenuItem(item DropdownMenuItem, index int, depth int) {
+	if len(item.SubItems) > 0 {
+		<div class="relative group">
+			<button
+				class={
+					"w-full text-left flex items-center justify-between px-4 py-2 text-sm",
+					templ.KV("text-foreground hover:bg-accent hover:text-accent-foreground", !item.Disabled),
+					templ.KV("text-muted-foreground cursor-not-allowed", item.Disabled),
+				}
+				role="menuitem"
+				tabindex="-1"
+				id={ fmt.Sprintf("menu-item-%d", index) }
+				aria-haspopup="true"
+				aria-expanded="false"
+				disabled?={ item.Disabled }
+			>
+				<span class="flex items-center gap-2">
+					if item.IconLeft != nil {
+						@item.IconLeft
+					}
+					{ item.Label }
+				</span>
+				if item.IconRight != nil {
+					@item.IconRight
+				} else {
+					@Icon(IconProps{Name: "chevron-right", Size: "16"})
+				}
+			</button>
+			if depth < 3 {
+				<div class="absolute left-full top-0 hidden group-hover:block">
+					<div class="py-1 bg-popover rounded-md shadow-lg border border-border">
+						for subIndex, subItem := range item.SubItems {
+							@renderMenuItem(subItem, subIndex, depth+1)
+						}
+					</div>
+				</div>
+			}
+		</div>
+	} else if item.Href != "" {
+		<a
+			href={ templ.SafeURL(item.Href) }
+			target={ item.Target }
+			class={
+				"block px-4 py-2 text-sm flex items-center",
+				templ.KV("text-foreground hover:bg-accent hover:text-accent-foreground", !item.Disabled),
+				templ.KV("text-muted-foreground cursor-not-allowed", item.Disabled),
+			}
+			role="menuitem"
+			tabindex="-1"
+			id={ fmt.Sprintf("menu-item-%d", index) }
+		>
+			<span class="flex items-center gap-2">
+				if item.IconLeft != nil {
+					@item.IconLeft
+				}
+				{ item.Label }
+			</span>
+			if item.IconRight != nil {
+				<span class="ml-auto">
+					@item.IconRight
+				</span>
+			}
+		</a>
+	} else {
+		<button
+			class={
+				"w-full text-left flex items-center justify-between px-4 py-2 text-sm",
+				templ.KV("text-foreground hover:bg-accent hover:text-accent-foreground", !item.Disabled),
+				templ.KV("text-muted-foreground cursor-not-allowed", item.Disabled),
+			}
+			role="menuitem"
+			tabindex="-1"
+			id={ fmt.Sprintf("menu-item-%d", index) }
+			@click={ fmt.Sprintf("!%t && $dispatch('dropdown-selected', { value: '%s' }) && (open = false)", item.Disabled, item.Value) }
+			disabled?={ item.Disabled }
+		>
+			<span class="flex items-center gap-2">
+				if item.IconLeft != nil {
+					@item.IconLeft
+				}
+				{ item.Label }
+			</span>
+			if item.IconRight != nil {
+				@item.IconRight
+			}
+		</button>
+	}
+}
+
+// DropdownMenu renders an enhanced dropdown menu component
+// It can be customized with various styles, positions, and behaviors.
 //
 // Usage:
 //
 //	@components.DropdownMenu(components.DropdownMenuProps{
-//		Label: "Options",
-//		Position: "right",
-//		Items: []components.DropdownMenuItem{
-//			{Label: "Option 1", Value: "opt1"},
-//			{Label: "Option 2", Value: "opt2"},
-//			{Label: "External Link", Href: "https://example.com", Target: "_blank"},
-//		},
+//	  Trigger: components.Button(components.ButtonProps{
+//	    Text: "Open Menu",
+//	    IconRight: components.Icon(components.IconProps{Name: "chevron-down"}),
+//	  }),
+//	  Position: "bottom",
+//	  Items: []components.DropdownMenuItem{
+//	    {Label: "Option 1", Value: "opt1"},
+//	    {Label: "Option 2", Value: "opt2", IconLeft: components.Icon(components.IconProps{Name: "settings"})},
+//	    {Label: "Submenu", SubItems: []components.DropdownMenuItem{
+//	      {Label: "Sub Option 1", Value: "sub1"},
+//	      {Label: "Sub Option 2", Value: "sub2"},
+//	    }},
+//	  },
 //	})
 //
-// The component uses Alpine.js for interactivity and Tailwind CSS for styling.
-// It includes dark mode support and responsive positioning.
+// Props:
+//   - Items: Slice of DropdownMenuItem, defining the content of the dropdown
+//   - Trigger: Custom component to trigger the dropdown (optional, default is a basic button)
+//   - Class: Additional CSS classes to apply to the root element
+//   - Position: Preferred position of the dropdown ("left", "right", "top", or "bottom")
+//
+// Features:
+//   - Supports nested submenus up to 3 levels deep
+//   - Automatically adjusts position based on available space
+//   - Supports custom icons for menu items
+//   - Handles disabled states for menu items
+//   - Uses Tailwind CSS for styling, including dark mode support
+//   - Implements keyboard navigation and ARIA attributes for accessibility
 templ DropdownMenu(props DropdownMenuProps) {
 	<div
-		class={ "relative inline-block text-left", props.Class }
 		x-data="{ 
 			open: false,
 			position: $el.dataset.position,
@@ -79,54 +173,49 @@ templ DropdownMenu(props DropdownMenuProps) {
 			}
 		}"
 		@resize.window="if (open) updatePosition()"
+		class={ "relative inline-block text-left", props.Class }
 		data-position={ props.Position }
 	>
-		<button
-			type="button"
-			class="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-			id="dropdown-menu-button"
-			@click="open = !open; if (open) $nextTick(() => updatePosition())"
-		>
-			{ props.Label }
-			<svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-			</svg>
-		</button>
+		<div @click="open = !open; if(open) $nextTick(() => updatePosition())">
+			if props.Trigger != nil {
+				@props.Trigger
+			} else {
+				@Button(ButtonProps{
+					Text:      "Options",
+					Variant:   "outline",
+					IconRight: Icon(IconProps{Name: "chevron-down", Size: "16"}),
+				})
+			}
+		</div>
 		<div
 			x-ref="menu"
 			x-show="open"
 			@click.away="open = false"
+			@keydown.escape.window="open = false"
 			x-transition:enter="transition ease-out duration-100"
 			x-transition:enter-start="transform opacity-0 scale-95"
 			x-transition:enter-end="transform opacity-100 scale-100"
 			x-transition:leave="transition ease-in duration-75"
 			x-transition:leave-start="transform opacity-100 scale-100"
 			x-transition:leave-end="transform opacity-0 scale-95"
+			class={
+				"absolute z-50 mt-2 w-56 rounded-md shadow-lg bg-popover ring-1 ring-black ring-opacity-5 focus:outline-none",
+				"border border-border",
+			}
 			:class="{
 				'right-0': position === 'left',
 				'left-0': position !== 'left',
 				'bottom-full mb-2': verticalPosition === 'top',
 				'top-full mt-2': verticalPosition === 'bottom'
 			}"
-			class="absolute w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 dark:ring-gray-700 focus:outline-none z-10"
+			role="menu"
+			aria-orientation="vertical"
+			aria-labelledby="dropdown-menu-button"
+			tabindex="-1"
 		>
-			<div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-menu-button">
-				for _, item := range props.Items {
-					if item.Href != "" {
-						<a
-							href={ templ.SafeURL(item.Href) }
-							target={ item.Target }
-							class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
-							role="menuitem"
-						>{ item.Label }</a>
-					} else {
-						<button
-							type="button"
-							class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
-							role="menuitem"
-							@click={ fmt.Sprintf("$dispatch('dropdown-selected', { value: '%s' }); open = false", item.Value) }
-						>{ item.Label }</button>
-					}
+			<div class="py-1" role="none">
+				for index, item := range props.Items {
+					@renderMenuItem(item, index, 0)
 				}
 			</div>
 		</div>

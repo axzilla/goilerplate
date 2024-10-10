@@ -6,13 +6,57 @@ templ DropdownMenuShowcase() {
 	<div class="flex justify-center items-center border rounded-md py-16 px-4">
 		<div class="flex gap-2 flex-wrap">
 			@components.DropdownMenu(components.DropdownMenuProps{
-				Label:    "Click me",
+				Items: []components.DropdownMenuItem{
+					{Label: "Profile", Value: "profile"},
+					{Label: "Settings", Value: "settings"},
+					{Label: "Logout", Value: "logout"},
+				},
+			})
+			@components.DropdownMenu(components.DropdownMenuProps{
+				Trigger: components.Button(components.ButtonProps{
+					Text:     "User Menu",
+					Variant:  "outline",
+					IconLeft: components.Icon(components.IconProps{Name: "menu", Size: "16"}),
+				}),
+				Position: "right",
+				Items: []components.DropdownMenuItem{
+					{
+						Label:    "Profile",
+						IconLeft: components.Icon(components.IconProps{Name: "user", Size: "16"}),
+						Href:     "/docs/components/dropdown-menu",
+					},
+					{
+						Label:    "Settings",
+						IconLeft: components.Icon(components.IconProps{Name: "settings", Size: "16"}),
+						Href:     "/docs/components/dropdown-menu",
+					},
+					{
+						Label:    "Logout",
+						IconLeft: components.Icon(components.IconProps{Name: "log-out", Size: "16"}),
+						Value:    "logout",
+					},
+				},
+			})
+			@components.DropdownMenu(components.DropdownMenuProps{
+				Trigger: components.Button(components.ButtonProps{
+					Text:     "Advanced Menu",
+					Variant:  "outline",
+					IconLeft: components.Icon(components.IconProps{Name: "menu", Size: "16"}),
+				}),
 				Position: "left",
 				Items: []components.DropdownMenuItem{
-					{Label: "Option 1", Value: "option1"},
-					{Label: "Option 2", Value: "option2"},
-					{Label: "Option 3", Value: "option3"},
-					{Label: "With Link", Href: "https://github.com/axzilla/goilerplate", Target: "_blank"},
+					{Label: "File", SubItems: []components.DropdownMenuItem{
+						{Label: "New", Value: "new"},
+						{Label: "Open", Value: "open"},
+						{Label: "Save", Value: "save"},
+					}},
+					{Label: "Edit", SubItems: []components.DropdownMenuItem{
+						{Label: "Cut", Value: "cut"},
+						{Label: "Copy", Value: "copy"},
+						{Label: "Paste", Value: "paste"},
+					}},
+					{Label: "View", Disabled: true},
+					{Label: "Help", Href: "https://github.com/axzilla/goilerplate", Target: "_blank"},
 				},
 			})
 		</div>
