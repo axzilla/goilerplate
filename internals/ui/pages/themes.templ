@@ -102,6 +102,32 @@ templ ThemePreview() {
 						})
 					</div>
 					<div class="space-y-2">
+						<label class="text-sm font-medium">Preferred Contact Method</label>
+						@components.RadioGroup(components.RadioGroupProps{DefaultValue: "email", Name: "contact-method"}) {
+							<div class="space-y-2">
+								@components.RadioGroupItem(components.RadioGroupItemProps{
+									Value: "email",
+									ID:    "contact-email",
+									Name:  "contact-method",
+									Label: templ.Raw("Email"),
+								})
+								@components.RadioGroupItem(components.RadioGroupItemProps{
+									Value: "phone",
+									ID:    "contact-phone",
+									Name:  "contact-method",
+									Label: templ.Raw("Phone"),
+								})
+								@components.RadioGroupItem(components.RadioGroupItemProps{
+									Value:    "mail",
+									ID:       "contact-mail",
+									Name:     "contact-method",
+									Label:    templ.Raw("Physical Mail"),
+									Disabled: "true",
+								})
+							</div>
+						}
+					</div>
+					<div class="space-y-2">
 						@components.Checkbox(components.CheckboxProps{
 							ID:    "terms",
 							Name:  "terms",
