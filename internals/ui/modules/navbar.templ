@@ -12,9 +12,8 @@ templ Navbar() {
 		<div class="container mx-auto px-4 flex justify-between items-center">
 			<div class="flex items-center">
 				@NavbarMobileMenu()
-				<a href="/" class="font-extrabold flex items-center">
-					<img src="/assets/img/gopher.svg" alt="logo" class="w-10 mr-2"/>
-					<span>templui</span>
+				<a href="/">
+					@wrappedicons.TemplUI("w-28 h-auto")
 				</a>
 			</div>
 			<div class="hidden md:flex gap-4 items-center">

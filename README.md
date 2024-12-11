@@ -2,7 +2,7 @@
 
 Modern UI Components for Go & Templ
 
-<img src="./assets/img/gopher.svg" alt="TemplUI Logo" width="200"/>
+<img src="./assets/img/readme.png" />
 
 ## About
 
