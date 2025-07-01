@@ -1,0 +1,83 @@
+// templui component spinner - version: v0.81.1 installed by templui v0.81.1
+package spinner
+
+import "github.com/axadrn/goilerplate/utils"
+
+type Size string
+
+const (
+	SizeSm Size = "sm"
+	SizeMd Size = "md"
+	SizeLg Size = "lg"
+)
+
+type Props struct {
+	ID         string
+	Class      string
+	Attributes templ.Attributes
+	Size       Size
+	Color      string
+}
+
+templ Spinner(props ...Props) {
+	{{ var p Props }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	<div
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={
+			utils.TwMerge(
+				"inline-flex flex-col items-center justify-center",
+				p.Class,
+			),
+		}
+		aria-label="Loading"
+		role="status"
+		{ p.Attributes... }
+	>
+		<div
+			class={
+				utils.TwMerge(
+					"animate-spin rounded-full",
+					sizeClass(p.Size),
+					borderSizeClass(p.Size),
+					utils.IfElse(
+						p.Color == "",
+						"border-primary border-b-transparent",
+						"border-current border-b-transparent",
+					),
+					utils.IfElse(
+						p.Color != "",
+						p.Color,
+						"",
+					),
+				),
+			}
+		></div>
+	</div>
+}
+
+func sizeClass(size Size) string {
+	switch size {
+	case SizeSm:
+		return "w-6 h-6"
+	case SizeLg:
+		return "w-12 h-12"
+	default:
+		return "w-8 h-8"
+	}
+}
+
+func borderSizeClass(size Size) string {
+	switch size {
+	case SizeSm:
+		return "border-[3px]"
+	case SizeLg:
+		return "border-[5px]"
+	default:
+		return "border-4"
+	}
+}

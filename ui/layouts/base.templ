@@ -2,6 +2,7 @@ package layouts
 
 import (
 	"github.com/axzilla/goilerplate/ui/modules"
+	"github.com/axzilla/goilerplate/ui/components/toast"
 )
 
 templ ThemeSwitcherScript() {
@@ -47,8 +48,11 @@ templ BaseLayout() {
 			<link href="/assets/css/output.css" rel="stylesheet"/>
 			<!-- Alpine.js -->
 			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+			<!-- HTMX -->
+			<script nonce={ templ.GetNonce(ctx) } src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
 			<!-- Theme switcher script -->
 			@ThemeSwitcherScript()
+			@toast.Script()
 		</head>
 		<body
 			x-data="themeHandler"
@@ -57,5 +61,33 @@ templ BaseLayout() {
 			{ children... }
 			@modules.FloatingThemeSwitcher()
 		</body>
+		<script>
+		  // Re-initialize templUI components after HTMX swaps
+		  document.body.addEventListener("htmx:afterSwap", (e) => {
+			if (window.templUI) {
+			  Object.values(window.templUI).forEach(comp => {
+				comp.init?.(e.detail.elt);
+			  });
+			}
+		  });
+
+		  // Re-initialize components after out-of-band swaps
+		  document.body.addEventListener("htmx:oobAfterSwap", (e) => {
+			if (window.templUI) {
+			  Object.values(window.templUI).forEach(comp => {
+				comp.init?.(e.detail.target);
+			  });
+			}
+		  });
+
+		  // Cleanup before swap (for components with event listeners)
+		  document.body.addEventListener("htmx:beforeSwap", (e) => {
+			if (window.templUI) {
+			  Object.values(window.templUI).forEach(comp => {
+				comp.cleanup?.(e.detail.target);
+			  });
+			}
+		  });
+		</script>
 	</html>
 }
