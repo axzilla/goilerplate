@@ -1,0 +1,210 @@
+// templui component toast - version: v0.81.1 installed by templui v0.81.1
+package toast
+
+import (
+	"github.com/axzilla/goilerplate/ui/components/button"
+	"github.com/axzilla/goilerplate/ui/components/icon"
+	"github.com/axzilla/goilerplate/utils"
+	"strconv"
+)
+
+type Variant string
+type Position string
+
+const (
+	VariantDefault Variant = "default"
+	VariantSuccess Variant = "success"
+	VariantError   Variant = "error"
+	VariantWarning Variant = "warning"
+	VariantInfo    Variant = "info"
+)
+
+const (
+	PositionTopRight     Position = "top-right"
+	PositionTopLeft      Position = "top-left"
+	PositionTopCenter    Position = "top-center"
+	PositionBottomRight  Position = "bottom-right"
+	PositionBottomLeft   Position = "bottom-left"
+	PositionBottomCenter Position = "bottom-center"
+)
+
+type Props struct {
+	ID            string
+	Class         string
+	Attributes    templ.Attributes
+	Title         string
+	Description   string
+	Variant       Variant
+	Position      Position
+	Duration      int
+	Dismissible   bool
+	ShowIndicator bool
+	Icon          bool
+}
+
+templ Toast(props ...Props) {
+	@ToastCSS()
+	{{ var p Props }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.ID == "" {
+		{{ p.ID = utils.RandomID() }}
+	}
+	{{ p = p.defaults() }}
+	{{ isTop := p.Position == PositionTopRight || p.Position == PositionTopLeft || p.Position == PositionTopCenter }}
+	{{ isBottom := p.Position == PositionBottomRight || p.Position == PositionBottomLeft || p.Position == PositionBottomCenter }}
+	<div
+		id={ p.ID }
+		data-toast
+		data-duration={ strconv.Itoa(p.Duration) }
+		class={ utils.TwMerge(
+			"z-50 fixed pointer-events-auto p-4",
+			"opacity-0 transform transition-all duration-300 ease-out",
+			utils.If(isTop, "top-0"),
+			utils.If(isBottom, "bottom-0"),
+			utils.If(isTop, "translate-y-4"),
+			utils.If(isBottom, "-translate-y-4"),
+			utils.If(p.Position == PositionTopRight || p.Position == PositionBottomRight, "right-0"),
+			utils.If(p.Position == PositionTopLeft || p.Position == PositionBottomLeft, "left-0"),
+			utils.If(p.Position == PositionTopCenter || p.Position == PositionBottomCenter, "left-1/2 -translate-x-1/2"),
+			"w-full md:max-w-[420px]",
+			p.Class,
+		) }
+		{ p.Attributes... }
+	>
+		<div class="w-full bg-background rounded-lg shadow-xs border pt-5 pb-4 px-4 flex items-center justify-center relative overflow-hidden">
+			if p.ShowIndicator {
+				@indicator(p)
+			}
+			if p.Icon {
+				@toastIcon(p)
+			}
+			<span class="flex-1 min-w-0">
+				@title(p)
+				@description(p)
+			</span>
+			if p.Dismissible {
+				@dismissButton()
+			}
+		</div>
+	</div>
+}
+
+templ indicator(p Props) {
+	<div class="absolute top-0 left-0 right-0 h-1">
+		<div
+			data-toast-progress
+			class={ utils.TwMerge(
+				"absolute inset-0",
+				typeClass(p.Variant),
+			) }
+		></div>
+	</div>
+}
+
+templ toastIcon(p Props) {
+	if p.Variant == VariantSuccess {
+		@icon.CircleCheck(icon.Props{Size: 22, Class: "text-green-500 mr-3 flex-shrink-0"})
+	} else if p.Variant == VariantError {
+		@icon.CircleX(icon.Props{Size: 22, Class: "text-red-500 mr-3 flex-shrink-0"})
+	} else if p.Variant == VariantWarning {
+		@icon.TriangleAlert(icon.Props{Size: 22, Class: "text-yellow-500 mr-3 flex-shrink-0"})
+	} else if p.Variant == VariantInfo {
+		@icon.Info(icon.Props{Size: 22, Class: "text-blue-500 mr-3 flex-shrink-0"})
+	}
+}
+
+templ title(p Props) {
+	if p.Title != "" {
+		<p class="text-sm font-semibold truncate">{ p.Title }</p>
+	}
+}
+
+templ description(p Props) {
+	if p.Description != "" {
+		<p class="text-sm opacity-90 mt-1">{ p.Description }</p>
+	}
+}
+
+templ dismissButton() {
+	@button.Button(button.Props{
+		Size:    button.SizeIcon,
+		Variant: button.VariantGhost,
+		Attributes: templ.Attributes{
+			"aria-label":         "Close",
+			"data-toast-dismiss": "",
+			"type":               "button",
+		},
+	}) {
+		@icon.X(icon.Props{
+			Size:  18,
+			Class: "opacity-75 hover:opacity-100",
+		})
+	}
+}
+
+func (p Props) defaults() Props {
+	if p.Variant == "" {
+		p.Variant = VariantDefault
+	}
+	if p.Position == "" {
+		p.Position = PositionBottomRight
+	}
+	if p.Duration == 0 {
+		p.Duration = 3000
+	}
+	return p
+}
+
+func typeClass(t Variant) string {
+	switch t {
+	case VariantDefault:
+		return "bg-gray-500"
+	case VariantSuccess:
+		return "bg-green-500"
+	case VariantError:
+		return "bg-red-500"
+	case VariantWarning:
+		return "bg-yellow-500"
+	case VariantInfo:
+		return "bg-blue-500"
+	default:
+		return ""
+	}
+}
+
+var cssHandle = templ.NewOnceHandle()
+
+templ ToastCSS() {
+	@cssHandle.Once() {
+		<style nonce={ templ.GetNonce(ctx) }>
+			[data-toast].toast-enter {
+				opacity: 0;
+				/* Initial vertical offset is handled by classes in the component */
+			}
+			[data-toast].toast-enter-active {
+				opacity: 1;
+				transform: translateY(0); /* Only handle vertical transition */
+			}
+			[data-toast].toast-leave {
+				opacity: 1;
+				transform: translateY(0); /* Start leave from final vertical position */
+			}
+			[data-toast].toast-leave-active {
+				opacity: 0;
+				/* Apply final vertical offset based on position */
+			}
+			[data-toast][class*=" top-"].toast-leave-active {
+				transform: translateY(1rem); /* Move down */
+			}
+			[data-toast][class*=" bottom-"].toast-leave-active {
+				transform: translateY(-1rem); /* Move up */
+			}
+		</style>
+	}
+}
+
+templ Script() {
+	<script defer src="assets/js/components/toast.min.js"></script>
+}

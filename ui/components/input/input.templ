@@ -1,0 +1,110 @@
+// templui component input - version: v0.81.1 installed by templui v0.81.1
+package input
+
+import (
+	"github.com/axzilla/goilerplate/ui/components/button"
+	"github.com/axzilla/goilerplate/ui/components/icon"
+	"github.com/axzilla/goilerplate/utils"
+)
+
+type Type string
+
+const (
+	TypeText     Type = "text"
+	TypePassword Type = "password"
+	TypeEmail    Type = "email"
+	TypeNumber   Type = "number"
+	TypeTel      Type = "tel"
+	TypeURL      Type = "url"
+	TypeSearch   Type = "search"
+	TypeDate     Type = "date"
+	TypeTime     Type = "time"
+	TypeFile     Type = "file"
+)
+
+type Props struct {
+	ID               string
+	Class            string
+	Attributes       templ.Attributes
+	Name             string
+	Type             Type
+	Placeholder      string
+	Value            string
+	Disabled         bool
+	Readonly         bool
+	Required         bool
+	FileAccept       string
+	HasError         bool
+	NoTogglePassword bool
+}
+
+templ Input(props ...Props) {
+	{{ var p Props }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Type == "" {
+		{{ p.Type = TypeText }}
+	}
+	if p.ID == "" {
+		{{ p.ID = utils.RandomID() }}
+	}
+	<div class="relative w-full">
+		<input
+			id={ p.ID }
+			type={ string(p.Type) }
+			if p.Name != "" {
+				name={ p.Name }
+			}
+			if p.Placeholder != "" {
+				placeholder={ p.Placeholder }
+			}
+			if p.Value != "" {
+				value={ p.Value }
+			}
+			if p.Type == TypeFile && p.FileAccept != "" {
+				accept={ p.FileAccept }
+			}
+			disabled?={ p.Disabled }
+			readonly?={ p.Readonly }
+			required?={ p.Required }
+			class={
+				utils.TwMerge(
+					"peer flex h-10 w-full px-3 py-2",
+					"rounded-md border border-input bg-background text-sm ring-offset-background",
+					"file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
+					"placeholder:text-muted-foreground",
+					"focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+					"disabled:cursor-not-allowed disabled:opacity-50",
+					utils.If(p.HasError, "border-destructive ring-destructive"),
+					utils.If(p.Type == TypePassword && !p.NoTogglePassword, "pr-8"),
+					p.Class,
+				),
+			}
+			{ p.Attributes... }
+		/>
+		if p.Type == TypePassword && !p.NoTogglePassword {
+			@button.Button(button.Props{
+				Size:       button.SizeIcon,
+				Variant:    button.VariantGhost,
+				Class:      "absolute right-0 top-1/2 -translate-y-1/2 opacity-50 cursor-pointer",
+				Attributes: templ.Attributes{"data-toggle-password": p.ID},
+			}) {
+				<span class="icon-open block">
+					@icon.Eye(icon.Props{
+						Size: 18,
+					})
+				</span>
+				<span class="icon-closed hidden">
+					@icon.EyeOff(icon.Props{
+						Size: 18,
+					})
+				</span>
+			}
+		}
+	</div>
+}
+
+templ Script() {
+	<script defer src="assets/js/components/input.min.js"></script>
+}

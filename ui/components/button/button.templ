@@ -1,0 +1,137 @@
+// templui component button - version: v0.81.1 installed by templui v0.81.1
+package button
+
+import (
+	"github.com/axzilla/goilerplate/utils"
+	"strings"
+)
+
+type Variant string
+type Size string
+type Type string
+
+const (
+	VariantDefault     Variant = "default"
+	VariantDestructive Variant = "destructive"
+	VariantOutline     Variant = "outline"
+	VariantSecondary   Variant = "secondary"
+	VariantGhost       Variant = "ghost"
+	VariantLink        Variant = "link"
+)
+
+const (
+	TypeButton Type = "button"
+	TypeReset  Type = "reset"
+	TypeSubmit Type = "submit"
+)
+
+const (
+	SizeIcon Size = "icon"
+)
+
+type Props struct {
+	ID         string
+	Class      string
+	Attributes templ.Attributes
+	Variant    Variant
+	Size       Size
+	FullWidth  bool
+	Href       string
+	Target     string
+	Disabled   bool
+	Type       Type
+}
+
+templ Button(props ...Props) {
+	{{ var p Props }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Type == "" {
+		{{ p.Type = TypeButton }}
+	}
+	if p.Href != "" && !p.Disabled {
+		<a
+			if p.ID != "" {
+				id={ p.ID }
+			}
+			href={ templ.SafeURL(p.Href) }
+			if p.Target != "" {
+				target={ p.Target }
+			}
+			class={
+				utils.TwMerge(
+					"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors",
+					"focus-visible:outline-hidden focus-visible:ring-2 focus:ring-ring focus-visible:ring-offset-2",
+					"cursor-pointer",
+					p.variantClasses(),
+					p.sizeClasses(),
+					p.modifierClasses(),
+					p.Class,
+				),
+			}
+			{ p.Attributes... }
+		>
+			{ children... }
+		</a>
+	} else {
+		<button
+			if p.ID != "" {
+				id={ p.ID }
+			}
+			class={
+				utils.TwMerge(
+					"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors",
+					"focus-visible:outline-hidden focus-visible:ring-2 focus:ring-ring focus-visible:ring-offset-2",
+					"disabled:opacity-50 disabled:cursor-not-allowed",
+					"cursor-pointer",
+					p.variantClasses(),
+					p.sizeClasses(),
+					p.modifierClasses(),
+					p.Class,
+				),
+			}
+			if p.Type != "" {
+				type={ string(p.Type) }
+			}
+			disabled?={ p.Disabled }
+			{ p.Attributes... }
+		>
+			{ children... }
+		</button>
+	}
+}
+
+func (b Props) variantClasses() string {
+	switch b.Variant {
+	case VariantDestructive:
+		return "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+	case VariantOutline:
+		return "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
+	case VariantSecondary:
+		return "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+	case VariantGhost:
+		return "hover:bg-accent hover:text-accent-foreground"
+	case VariantLink:
+		return "text-primary underline-offset-4 hover:underline"
+	default:
+		return "bg-primary text-primary-foreground hover:bg-primary/90"
+	}
+}
+
+func (b Props) sizeClasses() string {
+	switch b.Size {
+	case SizeIcon:
+		return "h-10 w-10"
+	default:
+		return "h-10 px-4 py-2 rounded-md"
+	}
+}
+
+func (b Props) modifierClasses() string {
+	classes := []string{}
+	if b.FullWidth {
+		classes = append(classes, "w-full")
+	}
+	return strings.Join(classes, " ")
+}

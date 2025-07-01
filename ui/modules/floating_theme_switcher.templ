@@ -1,0 +1,27 @@
+package modules
+
+import (
+	"github.com/axzilla/goilerplate/ui/components/button"
+	"github.com/axzilla/goilerplate/ui/components/icon"
+)
+
+templ FloatingThemeSwitcher() {
+	<div class="fixed bottom-4 right-4 z-50">
+		@button.Button(button.Props{
+			Variant: button.VariantOutline,
+			Size:    button.SizeIcon,
+			Class:   "rounded-full shadow-lg",
+			Attributes: templ.Attributes{
+				"@click": "toggleTheme",
+			},
+		}) {
+			<span x-show="!isDark">
+				@icon.Moon(icon.Props{Size: 20})
+			</span>
+			<span x-show="isDark">
+				@icon.Sun(icon.Props{Size: 20})
+			</span>
+		}
+	</div>
+}
+

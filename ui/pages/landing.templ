@@ -1,0 +1,101 @@
+package pages
+
+import (
+	"github.com/axzilla/goilerplate/ui/components/button"
+	"github.com/axzilla/goilerplate/ui/layouts"
+	"github.com/axzilla/goilerplate/ui/components/input"
+)
+
+templ Landing() {
+	@layouts.BaseLayout() {
+		<div class="flex flex-col min-h-screen">
+			<!-- Hero Section -->
+			<div class="flex-1 flex justify-center items-center px-4 py-8 md:py-16">
+				<div class="flex flex-col gap-12 items-center justify-center w-full max-w-5xl">
+					<!-- Gopher -->
+					<div class="relative group">
+						<div class="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-pink-600/30 blur-2xl rounded-full animate-pulse"></div>
+						<img
+							src="/assets/img/gopher.gif"
+							alt="Go Gopher"
+							class="relative w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl"
+						/>
+					</div>
+					<!-- Content -->
+					<div class="text-center space-y-4">
+						<h1 class="text-6xl md:text-8xl font-black bg-gradient-to-br from-purple-600 via-pink-600 to-purple-600 bg-clip-text text-transparent leading-none tracking-tight pb-2">
+							It's cooking.
+						</h1>
+						<p class="text-lg md:text-xl text-muted-foreground font-medium tracking-wide uppercase">
+							THE Go boilerplate.
+						</p>
+					</div>
+					<!-- Tech Stack -->
+					<div class="flex flex-wrap gap-3 justify-center">
+						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
+							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">Goilerplate</span>
+						</div>
+						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
+							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">templ</span>
+						</div>
+						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
+							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">Tailwind CSS</span>
+						</div>
+						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
+							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">Alpine.js</span>
+						</div>
+						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
+							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">HTMX</span>
+						</div>
+					</div>
+					<!-- Early Access CTA -->
+					<div class="w-full max-w-lg space-y-4">
+						<div class="relative">
+							<div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-30"></div>
+							<form
+								id="newsletter-form"
+								class="relative flex flex-col md:flex-row gap-3 p-2 bg-background/50 backdrop-blur-xl rounded-xl border border-purple-600/20"
+								hx-post="/api/newsletter"
+								hx-target="#toast-container"
+								hx-swap="innerHTML"
+							>
+								@input.Input(input.Props{
+									Type:        input.TypeEmail,
+									Name:        "email",
+									Placeholder: "Enter your email",
+									Required:    true,
+									Class:       "bg-transparent border-0 focus:ring-0",
+								})
+								@button.Button(button.Props{
+									Type:    button.TypeSubmit,
+									Variant: button.VariantDefault,
+									Class:   "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0",
+								}) {
+									Get Early Bird Access
+								}
+							</form>
+						</div>
+						<div class="text-center space-y-2">
+							<p class="text-sm font-medium text-muted-foreground">
+								Early Bird: <span class="text-purple-600 font-bold text-lg">$149</span> <span class="line-through text-muted-foreground/50">$299</span> • Includes <a href="https://pro.templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors">templUI Pro</a>
+							</p>
+							<p class="text-xs text-center text-muted-foreground">
+								Powered by <a href="https://templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors font-medium">templUI</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Footer -->
+			<footer class="py-6 px-4 border-t">
+				<div class="max-w-4xl mx-auto text-center">
+					<p class="text-sm text-muted-foreground">
+						Made with ♥ by <a href="https://x.com/axadrn" target="_blank" class="hover:text-foreground transition-colors">Axel Adrian</a>
+					</p>
+				</div>
+			</footer>
+		</div>
+		<!-- Toast Container -->
+		<div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+	}
+}
