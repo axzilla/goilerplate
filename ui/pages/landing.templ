@@ -26,34 +26,37 @@ templ Landing() {
 						<h1 class="text-6xl md:text-8xl font-black bg-gradient-to-br from-purple-600 via-pink-600 to-purple-600 bg-clip-text text-transparent leading-none tracking-tight pb-2">
 							It's cooking.
 						</h1>
-						<p class="text-lg md:text-xl text-muted-foreground font-medium tracking-wide uppercase">
+						<p class="text-lg md:text-xl text-foreground font-medium tracking-wide uppercase">
 							THE Go boilerplate.
 						</p>
+						<p class="text-sm font-medium text-muted-foreground">
+							✨ Includes <a href="https://pro.templui.io" target="_blank" class="text-pink-500 hover:text-pink-600 font-bold transition-colors">templUI Pro</a> <span class="text-muted-foreground">($299 value)</span>
+						</p>
 						<div class="flex justify-center">
-							<span class="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-pink-600 text-white rounded-full">
+							<span class="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-transparent text-pink-500 border-2 border-pink-500 rounded-full">
 								Coming 2025
 							</span>
 						</div>
 					</div>
 					<!-- Tech Stack -->
 					<div class="flex flex-wrap gap-3 justify-center">
-						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
-							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">Go</span>
+						<div class="px-4 py-2 bg-muted/50 backdrop-blur-sm rounded-full border border-border">
+							<span class="text-sm font-medium text-foreground">Go</span>
 						</div>
-						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
-							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">templ</span>
+						<div class="px-4 py-2 bg-muted/50 backdrop-blur-sm rounded-full border border-border">
+							<span class="text-sm font-medium text-foreground">templ</span>
 						</div>
-						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
-							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">Tailwind CSS</span>
+						<div class="px-4 py-2 bg-muted/50 backdrop-blur-sm rounded-full border border-border">
+							<span class="text-sm font-medium text-foreground">Tailwind CSS</span>
 						</div>
-						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
-							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">Alpine.js</span>
+						<div class="px-4 py-2 bg-muted/50 backdrop-blur-sm rounded-full border border-border">
+							<span class="text-sm font-medium text-foreground">Alpine.js</span>
 						</div>
-						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
-							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">HTMX</span>
+						<div class="px-4 py-2 bg-muted/50 backdrop-blur-sm rounded-full border border-border">
+							<span class="text-sm font-medium text-foreground">HTMX</span>
 						</div>
-						<div class="px-4 py-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-full border border-purple-600/20">
-							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">SQLite</span>
+						<div class="px-4 py-2 bg-muted/50 backdrop-blur-sm rounded-full border border-border">
+							<span class="text-sm font-medium text-foreground">SQLite</span>
 						</div>
 					</div>
 					<!-- Pre-Sale & Early Access CTA -->
@@ -62,13 +65,13 @@ templ Landing() {
 						<div class="text-center space-y-3">
 							@button.Button(button.Props{
 								Variant: button.VariantDefault,
-								Class:   "relative w-full bg-pink-600 hover:bg-pink-500 text-white",
+								Class:   "relative w-full bg-pink-500 hover:bg-pink-600 text-white",
 							}) {
 								Pre-order for $79
 								<span class="ml-2 text-sm font-normal opacity-90">Save $220</span>
 							}
 							<p class="text-xs text-muted-foreground">
-								One-time payment • Lifetime updates • Ships 2025
+								One-time payment • Lifetime updates
 							</p>
 						</div>
 						<!-- Divider -->
@@ -79,9 +82,14 @@ templ Landing() {
 						</div>
 						<!-- Newsletter Form -->
 						<div class="space-y-3">
-							<p class="text-center text-sm font-medium text-muted-foreground">
-								Join the waitlist for early bird pricing
-							</p>
+							<div class="text-center space-y-1">
+								<p class="text-sm font-medium text-muted-foreground">
+									Join the waitlist for early bird access
+								</p>
+								<p class="text-xs">
+									<span class="text-pink-500 font-bold text-base">$149</span> <span class="line-through text-muted-foreground">$299</span>
+								</p>
+							</div>
 							<form
 								id="newsletter-form"
 								class="flex flex-col md:flex-row gap-3"
@@ -94,25 +102,21 @@ templ Landing() {
 									Name:        "email",
 									Placeholder: "Enter your email",
 									Required:    true,
-									Class:       "bg-background/50 backdrop-blur-sm border-purple-600/20",
+									Class:       "bg-background/50 backdrop-blur-sm border-muted-foreground/20",
 								})
 								@button.Button(button.Props{
 									Type:    button.TypeSubmit,
 									Variant: button.VariantOutline,
-									Class:   "border-purple-600/20 hover:bg-purple-600/10",
+									Class:   "border-muted-foreground/20 hover:bg-muted/50",
 								}) {
 									Get notified
 								}
 							</form>
-							<p class="text-xs text-center text-muted-foreground">
-								Early bird: $149 <span class="line-through opacity-50">$299</span>
-							</p>
 						</div>
 						<!-- Bottom info -->
 						<div class="text-center">
 							<p class="text-xs text-muted-foreground">
-								Includes <a href="https://pro.templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors">templUI Pro</a> • 
-								Powered by <a href="https://templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors">templUI</a>
+								Powered by <a href="https://templui.io" target="_blank" class="text-pink-500 hover:text-pink-600 font-medium transition-colors">templUI</a>
 							</p>
 						</div>
 					</div>
@@ -122,7 +126,7 @@ templ Landing() {
 			<footer class="py-6 px-4 border-t">
 				<div class="max-w-4xl mx-auto text-center">
 					<p class="text-sm text-muted-foreground">
-						Made with ♥ by <a href="https://x.com/axadrn" target="_blank" class="hover:text-foreground transition-colors">Axel Adrian</a>
+						Made with ♥ by <a href="https://axeladrian.com" target="_blank" class="hover:text-foreground transition-colors">Axel Adrian</a>
 					</p>
 				</div>
 			</footer>
