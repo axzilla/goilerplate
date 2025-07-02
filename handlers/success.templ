@@ -1,0 +1,33 @@
+package handlers
+
+import "github.com/axzilla/goilerplate/ui/layouts"
+
+templ SuccessPage(email string) {
+	@layouts.BaseLayout() {
+		<div class="min-h-screen flex items-center justify-center px-4">
+			<div class="max-w-md w-full text-center">
+				<div class="mb-8">
+					<div class="w-20 h-20 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+						<svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+						</svg>
+					</div>
+					<h1 class="text-3xl font-bold text-foreground mb-2">Thank You!</h1>
+					<p class="text-lg text-muted-foreground">Your order has been confirmed</p>
+				</div>
+				<div class="bg-muted/50 rounded-lg p-6 mb-8">
+					<p class="text-sm text-muted-foreground mb-2">Stripe sent a payment confirmation to:</p>
+					<p class="font-medium text-foreground">{ email }</p>
+				</div>
+				<div class="space-y-4">
+					<p class="text-sm text-muted-foreground">
+						You're now on the early access list. We'll notify you as soon as the product is ready.
+					</p>
+					<a href="/" class="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition">
+						Back to Home
+					</a>
+				</div>
+			</div>
+		</div>
+	}
+}

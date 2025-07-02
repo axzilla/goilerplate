@@ -8,3 +8,8 @@ require (
 )
 
 require github.com/Oudwins/tailwind-merge-go v0.2.0
+
+require (
+	github.com/stripe/stripe-go/v79 v79.12.0 // indirect
+	github.com/stripe/stripe-go/v82 v82.3.0 // indirect
+)

@@ -63,13 +63,16 @@ templ Landing() {
 					<div class="w-full max-w-lg space-y-6">
 						<!-- Pre-Sale Button -->
 						<div class="text-center space-y-3">
-							@button.Button(button.Props{
-								Variant: button.VariantDefault,
-								Class:   "relative w-full bg-pink-500 hover:bg-pink-600 text-white",
-							}) {
-								Pre-order for $79
-								<span class="ml-2 text-sm font-normal opacity-90">Save $220</span>
-							}
+							<form action="/api/checkout" method="POST">
+								@button.Button(button.Props{
+									Type:    button.TypeSubmit,
+									Variant: button.VariantDefault,
+									Class:   "relative w-full bg-pink-500 hover:bg-pink-600 text-white",
+								}) {
+									Pre-order for $79
+									<span class="ml-2 text-sm font-normal opacity-90">Save $220</span>
+								}
+							</form>
 							<p class="text-xs text-muted-foreground">
 								One-time payment • Lifetime updates
 							</p>
