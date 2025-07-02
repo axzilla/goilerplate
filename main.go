@@ -18,6 +18,8 @@ func main() {
 	SetupAssetsRoutes(mux)
 	mux.Handle("GET /", templ.Handler(pages.Landing()))
 	mux.HandleFunc("POST /api/newsletter", handlers.HandleNewsletter)
+	mux.HandleFunc("POST /api/checkout", handlers.CreateCheckoutSession)
+	mux.HandleFunc("GET /success", handlers.HandleSuccess)
 	fmt.Println("Server is running on http://localhost:8090")
 	http.ListenAndServe(":8090", mux)
 }
