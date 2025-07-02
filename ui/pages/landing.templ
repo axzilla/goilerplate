@@ -29,6 +29,11 @@ templ Landing() {
 						<p class="text-lg md:text-xl text-muted-foreground font-medium tracking-wide uppercase">
 							THE Go boilerplate.
 						</p>
+						<div class="flex justify-center">
+							<span class="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-pink-600 text-white rounded-full">
+								Coming 2025
+							</span>
+						</div>
 					</div>
 					<!-- Tech Stack -->
 					<div class="flex flex-wrap gap-3 justify-center">
@@ -51,13 +56,35 @@ templ Landing() {
 							<span class="text-sm font-medium text-purple-600 dark:text-purple-400">SQLite</span>
 						</div>
 					</div>
-					<!-- Early Access CTA -->
-					<div class="w-full max-w-lg space-y-4">
-						<div class="relative">
-							<div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-30"></div>
+					<!-- Pre-Sale & Early Access CTA -->
+					<div class="w-full max-w-lg space-y-6">
+						<!-- Pre-Sale Button -->
+						<div class="text-center space-y-3">
+							@button.Button(button.Props{
+								Variant: button.VariantDefault,
+								Class:   "relative w-full bg-pink-600 hover:bg-pink-500 text-white",
+							}) {
+								Pre-order for $79
+								<span class="ml-2 text-sm font-normal opacity-90">Save $220</span>
+							}
+							<p class="text-xs text-muted-foreground">
+								One-time payment • Lifetime updates • Ships 2025
+							</p>
+						</div>
+						<!-- Divider -->
+						<div class="flex items-center gap-3">
+							<div class="flex-1 h-px bg-border"></div>
+							<span class="text-sm text-muted-foreground">or</span>
+							<div class="flex-1 h-px bg-border"></div>
+						</div>
+						<!-- Newsletter Form -->
+						<div class="space-y-3">
+							<p class="text-center text-sm font-medium text-muted-foreground">
+								Join the waitlist for early bird pricing
+							</p>
 							<form
 								id="newsletter-form"
-								class="relative flex flex-col md:flex-row gap-3 p-2 bg-background/50 backdrop-blur-xl rounded-xl border border-purple-600/20"
+								class="flex flex-col md:flex-row gap-3"
 								hx-post="/api/newsletter"
 								hx-target="#toast-container"
 								hx-swap="innerHTML"
@@ -67,23 +94,25 @@ templ Landing() {
 									Name:        "email",
 									Placeholder: "Enter your email",
 									Required:    true,
-									Class:       "bg-transparent border-0 focus:ring-0",
+									Class:       "bg-background/50 backdrop-blur-sm border-purple-600/20",
 								})
 								@button.Button(button.Props{
 									Type:    button.TypeSubmit,
-									Variant: button.VariantDefault,
-									Class:   "bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-80",
+									Variant: button.VariantOutline,
+									Class:   "border-purple-600/20 hover:bg-purple-600/10",
 								}) {
-									Get Early Bird Access
+									Get notified
 								}
 							</form>
-						</div>
-						<div class="text-center space-y-2">
-							<p class="text-sm font-medium text-muted-foreground">
-								Early Bird: <span class="text-purple-600 font-bold text-lg">$149</span> <span class="line-through text-muted-foreground/50">$299</span> • Includes <a href="https://pro.templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors">templUI Pro</a>
-							</p>
 							<p class="text-xs text-center text-muted-foreground">
-								Powered by <a href="https://templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors font-medium">templUI</a>
+								Early bird: $149 <span class="line-through opacity-50">$299</span>
+							</p>
+						</div>
+						<!-- Bottom info -->
+						<div class="text-center">
+							<p class="text-xs text-muted-foreground">
+								Includes <a href="https://pro.templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors">templUI Pro</a> • 
+								Powered by <a href="https://templui.io" target="_blank" class="text-purple-600 hover:text-purple-700 transition-colors">templUI</a>
 							</p>
 						</div>
 					</div>
