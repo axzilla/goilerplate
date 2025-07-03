@@ -4,6 +4,7 @@ import (
 	"github.com/axzilla/goilerplate/ui/components/button"
 	"github.com/axzilla/goilerplate/ui/layouts"
 	"github.com/axzilla/goilerplate/ui/components/input"
+	"github.com/axzilla/goilerplate/ui/components/popover"
 )
 
 templ Landing() {
@@ -73,6 +74,16 @@ templ Landing() {
 									<span class="ml-2 text-sm font-normal opacity-90">Save $220</span>
 								}
 							</form>
+							<div class="flex justify-center">
+								@popover.Trigger(popover.TriggerProps{
+									For:         "features-popover-main",
+									TriggerType: popover.TriggerTypeClick,
+									Class:       "cursor-pointer hover:text-foreground transition-colors flex items-center gap-1",
+								}) {
+									<span class="text-sm">📋</span>
+									<span class="text-sm text-muted-foreground underline-offset-4 hover:underline">What's included?</span>
+								}
+							</div>
 							<p class="text-xs text-muted-foreground">
 								One-time payment • Lifetime updates
 							</p>
@@ -136,5 +147,63 @@ templ Landing() {
 		</div>
 		<!-- Toast Container -->
 		<div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+		<!-- Feature Popovers -->
+		@popover.Content(popover.ContentProps{
+			ID:        "features-popover-main",
+			Placement: popover.PlacementBottom,
+			ShowArrow: true,
+			Class:     "w-72 max-w-sm max-h-80 overflow-auto",
+		}) {
+			<div class="p-3 space-y-3">
+				<h3 class="font-bold text-base text-center flex items-center justify-center gap-2">
+					<span>🔥</span>
+				</h3>
+				<div class="space-y-2">
+					<div class="grid grid-cols-1 gap-1 text-xs">
+						<div class="flex items-center gap-2">
+							<span>🔐</span>
+							<span><strong>Auth</strong> - JWT, Login, Reset</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>💳</span>
+							<span><strong>Payments</strong> - Stripe + Subscriptions</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>📁</span>
+							<span><strong>File Uploads</strong> - S3 Ready</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>📊</span>
+							<span><strong>Analytics</strong> - Plausible + Google</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>📧</span>
+							<span><strong>Email</strong> - SMTP + Newsletter</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>🗄️</span>
+							<span><strong>Database</strong> - SQLite + Migrations</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>🌙</span>
+							<span><strong>Themes</strong> - Dark/Light Mode</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>🐳</span>
+							<span><strong>Deploy</strong> - Docker Ready</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span>⚡</span>
+							<span class="text-pink-400 font-medium"><strong>+ Much More</strong></span>
+						</div>
+					</div>
+				</div>
+				<div class="border-t pt-2">
+					<div class="text-xs text-muted-foreground">
+						Complete working patterns for dashboards, forms, file handling, user management & more
+					</div>
+				</div>
+			</div>
+		}
 	}
 }

@@ -1,7 +1,7 @@
 {
   "componentsDir": "ui/components",
   "utilsDir": "utils",
-  "moduleName": "github.com/axadrn/goilerplate",
+  "moduleName": "github.com/axzilla/goilerplate",
   "jsDir": "assets/js/components",
   "jsPublicPath": "assets/js/components"
 }

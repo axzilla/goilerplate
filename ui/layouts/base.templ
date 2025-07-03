@@ -3,6 +3,7 @@ package layouts
 import (
 	"github.com/axzilla/goilerplate/ui/modules"
 	"github.com/axzilla/goilerplate/ui/components/toast"
+	"github.com/axzilla/goilerplate/ui/components/popover"
 )
 
 templ ThemeSwitcherScript() {
@@ -53,6 +54,7 @@ templ BaseLayout() {
 			<!-- Theme switcher script -->
 			@ThemeSwitcherScript()
 			@toast.Script()
+			@popover.Script()
 		</head>
 		<body
 			x-data="themeHandler"
